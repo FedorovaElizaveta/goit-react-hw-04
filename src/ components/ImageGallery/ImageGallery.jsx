@@ -1,15 +1,12 @@
+import css from "./ImageGallery.module.css";
 import ImageCard from "../ImageCard/ImageCard";
 
-const ImageGallery = ({ images }) => {
-  if (images.length === 0) {
-    return null;
-  }
-
+const ImageGallery = ({ photos }) => {
   return (
-    <ul>
-      {images.map((image, index) => (
-        <li key={index}>
-          <ImageCard src={image.src} alt={image.alt} />
+    <ul className={css.gallery}>
+      {photos.map((photo) => (
+        <li key={photo.id} className={css.galleryItem}>
+          <ImageCard photo={photo} />
         </li>
       ))}
     </ul>

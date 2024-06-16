@@ -14,9 +14,9 @@ const getPhotosApi = async (query, page) => {
         page,
       },
     });
-    return data.results;
+    return data;
   } catch (error) {
-    console.log("Something went wrong...");
+    alert("Something went wrong...");
   }
 };
 

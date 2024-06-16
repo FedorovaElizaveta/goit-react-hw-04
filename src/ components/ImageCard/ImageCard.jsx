@@ -1,8 +1,8 @@
 import css from "./ImageCard.module.css";
 
-const ImageCard = ({ photo }) => {
+const ImageCard = ({ photo, onPhotoClick }) => {
   return (
-    <div className={css.galleryImgWrapper}>
+    <div className={css.galleryImgWrapper} onClick={() => onPhotoClick(photo)}>
       <img
         src={photo.urls.small}
         alt={photo.description}

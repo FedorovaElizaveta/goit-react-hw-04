@@ -5,7 +5,8 @@ import LoadMoreBtn from "./ components/LoadMoreBtn/LoadMoreBtn";
 import Loader from "./ components/Loader/Loader";
 import SearchBar from "./ components/SearchBar/SearchBar";
 import getPhotosApi from "./api/photos-api";
-// import ImageModal from "./ components/ImageModal/ImageModal";
+import ImageModal from "./ components/ImageModal/ImageModal";
+import ErrorNotFound from "./ components/ErrorNotFound/ErrorNotFound";
 
 function App() {
   const [photos, setPhotos] = useState([]);
@@ -13,14 +14,23 @@ function App() {
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
+  const [errorNotFound, setErrorNotFound] = useState(false);
+  const [selectedPhoto, setSelectedPhoto] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [photoData, setPhotoData] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setError(false);
+        setErrorNotFound(false);
         setIsLoading(true);
         const data = await getPhotosApi(query, page);
-        setPhotos((prev) => [...prev, ...data]);
+        setPhotos((prev) => [...prev, ...data.results]);
+        {
+          data.total === 0 && setErrorNotFound(true);
+        }
+        setPhotoData(data);
       } catch (error) {
         setError(true);
       } finally {
@@ -40,14 +50,35 @@ function App() {
     setPage(page + 1);
   };
 
+  const handlePhotoClick = (photo) => {
+    setSelectedPhoto(photo);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setSelectedPhoto(null);
+    setIsModalOpen(false);
+  };
+
   return (
     <>
       <SearchBar getQuery={handleSubmit} />
       {error && <ErrorMessage />}
-      {photos.length > 0 && <ImageGallery photos={photos} />}
+      {errorNotFound && <ErrorNotFound />}
+      {photos.length > 0 && (
+        <ImageGallery photos={photos} onPhotoClick={handlePhotoClick} />
+      )}
       {isLoading && <Loader />}
-      {photos.length > 0 && <LoadMoreBtn handleLoadMore={handleLoadMore} />}
-      {/* {photos.length > 0 && <ImageModal modalImage={imageModalPhoto} />} */}
+      {photos.length > 0 && page !== photoData.total_pages && (
+        <LoadMoreBtn handleLoadMore={handleLoadMore} />
+      )}
+      {isModalOpen && (
+        <ImageModal
+          photo={selectedPhoto}
+          closeModal={closeModal}
+          isModalOpen={isModalOpen}
+        />
+      )}
     </>
   );
 }

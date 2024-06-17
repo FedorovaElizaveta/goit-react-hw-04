@@ -1,8 +1,12 @@
 import css from "./SearchBar.module.css";
 import toast, { Toaster } from "react-hot-toast";
 import { FiSearch } from "react-icons/fi";
+import ScrollUpBtn from "../ScrollUpBtn/ScrollUpBtn";
+import { useRef } from "react";
 
 const SearchBar = ({ getQuery }) => {
+  const headerRef = useRef(null);
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -19,7 +23,7 @@ const SearchBar = ({ getQuery }) => {
   };
 
   return (
-    <header className={css.header}>
+    <header ref={headerRef} className={css.header}>
       <div>
         <Toaster />
       </div>
@@ -37,6 +41,7 @@ const SearchBar = ({ getQuery }) => {
           <FiSearch />
         </button>
       </form>
+      <ScrollUpBtn headerRef={headerRef} />
     </header>
   );
 };

@@ -7,6 +7,7 @@ import SearchBar from "./ components/SearchBar/SearchBar";
 import getPhotosApi from "./api/photos-api";
 import ImageModal from "./ components/ImageModal/ImageModal";
 import ErrorNotFound from "./ components/ErrorNotFound/ErrorNotFound";
+import LastPageMessage from "./ components/LastPageMessage/LastPageMessage";
 
 function App() {
   const [photos, setPhotos] = useState([]);
@@ -60,6 +61,8 @@ function App() {
     setIsModalOpen(false);
   };
 
+  console.log("total_pages", photoData.total_pages);
+
   return (
     <>
       <SearchBar getQuery={handleSubmit} />
@@ -69,6 +72,9 @@ function App() {
         <ImageGallery photos={photos} onPhotoClick={handlePhotoClick} />
       )}
       {isLoading && <Loader />}
+      {page === photoData.total_pages && (
+        <LastPageMessage page={page} totalPages={photoData.total_pages} />
+      )}
       {photos.length > 0 && page !== photoData.total_pages && (
         <LoadMoreBtn handleLoadMore={handleLoadMore} />
       )}
